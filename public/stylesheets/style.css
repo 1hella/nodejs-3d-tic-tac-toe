@@ -6,3 +6,76 @@ body {
 a {
   color: #00B7FF;
 }
+
+.text-white {
+  color: white;
+}
+
+.btn>a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1 {
+  margin-bottom: 45px;
+}
+
+.underline {
+  text-decoration: underline
+}
+
+.btn-sm {
+  font-size: 0.9em !important;
+}
+
+.jumbotron h1 {
+  font-size: 3.9em;
+}
+
+.margin-btm-sm {
+  margin-bottom: 10px;
+}
+
+.margin-btm-md {
+  margin-bottom: 30px !important;
+}
+
+.margin-btm-lg {
+  margin-bottom: 60px !important;
+}
+
+.strong {
+  font-weight: bold !important;
+}
+
+.margin-right-sm {
+  margin-right: 10px;
+}
+
+button {
+  white-space: normal !important;
+}
+
+@media screen and (max-width: 574px) {
+  .jumbotron a.btn {
+    margin-top: 5px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .jumbotron table .btn {
+    padding: 14px;
+  }
+}
+
+@media screen and (max-width: 448px) {
+  body {
+    padding-left: 0px;
+    padding-right: 0;
+  }
+  table th,
+  table td {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+}
