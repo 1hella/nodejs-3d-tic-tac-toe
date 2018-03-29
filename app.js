@@ -13,19 +13,25 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// body parsing
+app.use(express.urlencoded({
+  extended: false
+}));
+app.use(express.json());
+
 app.use('/', index);
 app.use('/login', login);
-app.use('register', register);
+app.use('/register', register);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

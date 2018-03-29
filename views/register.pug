@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  .jumbotron
+    h1= title
+    form#login-form(action=base + "/register", method="post")
+      .lead
+        .form-group.text-left
+          label.control-label(for="username") Username:
+          input#username.form-control(type="text", name="username")
+        .form-group.text-left(class=incorrectPassword ? "has-error" : undefined)
+          label.control-label(for="password") Password:
+          input#password.form-control(type="password", name="password")
+        
+        if error
+          .alert.alert-danger
+            p(style="font-size: initial")= error
+      
+      button.btn.btn-lg.btn-success.margin-right-sm(type="submit") Register
