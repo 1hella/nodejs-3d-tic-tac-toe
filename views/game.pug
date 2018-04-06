@@ -1,7 +1,9 @@
 extends layout
 
 block scripts
+  script(src=base + "/javascripts/three.min.js")
+  //- <script src='threex.domevent.js'></script>
+  script(src=base + "/javascripts/TrackballControls.js")
+  script(src=base + '/javascripts/game.js' defer)
 
 block content
-  .jumbotron
-    h1= title
