@@ -15,97 +15,31 @@ function init() {
     scene = new THREE.Scene();
 
     for (var i= 0; i < 27; i++) {
-        cubes.push(new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial()));
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial());
+        
+        // x
+        if (i % 3 === 1) {
+            cube.position.x = 300;
+        } else if (i % 3 === 2) {
+            cube.position.x = 600;
+        }
+
+        // y
+        if (i % 9 >= 6) {
+            cube.position.y = 600;
+        } else if (i % 9 >= 3) {
+            cube.position.y = 300;
+        }
+
+        // z
+        if (i >= 18) {
+            cube.position.z = 600;
+        } else if (i >= 9) {
+            cube.position.z = 300;
+        }
+
+        cubes.push(cube);
     }
-
-    //1st Layer
-    //1 row
-    cubes[1].position.x = 300;
-    cubes[2].position.x = 600;
-    
-    //2 row
-    cubes[3].position.y = 300;
-    cubes[4].position.y = 300;
-    cubes[5].position.y = 300;
-
-    cubes[4].position.x = 300;
-    cubes[5].position.x = 600;
-    
-    //3 row
-    cubes[6].position.y = 600;
-    cubes[7].position.y = 600;
-    cubes[8].position.y = 600;
-
-    cubes[7].position.x = 300;
-    cubes[8].position.x = 600;
-
-    //2nd Layer
-    //1
-    cubes[9].position.z = 300;
-    cubes[10].position.z = 300;
-    cubes[11].position.z = 300;
-
-    cubes[10].position.x = 300;
-    cubes[11].position.x = 600;
-
-    //2
-    cubes[12].position.z = 300;
-    cubes[13].position.z = 300;
-    cubes[14].position.z = 300;
-
-    cubes[12].position.y = 300;
-    cubes[13].position.y = 300;
-    cubes[14].position.y = 300;
-
-    cubes[13].position.x = 300;
-    cubes[14].position.x = 600;
-
-    //3
-    cubes[15].position.z = 300;
-    cubes[16].position.z = 300;
-    cubes[17].position.z = 300;
-
-    cubes[15].position.y = 600;
-    cubes[16].position.y = 600;
-    cubes[17].position.y = 600;
-
-    cubes[16].position.x = 300;
-    cubes[17].position.x = 600;
-
-    //3rd Layer
-    //1
-    cubes[18].position.z = 600;
-    cubes[19].position.z = 600;
-    cubes[20].position.z = 600;
-
-    cubes[19].position.x = 300;
-    cubes[20].position.x = 600;
-
-    //2
-    cubes[21].position.z = 600;
-    cubes[22].position.z = 600;
-    cubes[23].position.z = 600;
-
-    cubes[21].position.y = 300;
-    cubes[22].position.y = 300;
-    cubes[23].position.y = 300;
-
-    cubes[22].position.x = 300;
-    cubes[23].position.x = 600;
-
-    //3
-    cubes[24].position.z = 600;
-    cubes[25].position.z = 600;
-    cubes[26].position.z = 600;
-
-    cubes[24].position.y = 600;
-    cubes[25].position.y = 600;
-    cubes[26].position.y = 600;
-
-    cubes[25].position.x = 300;
-    cubes[26].position.x = 600;
-
-
 
     for (var cube of cubes) {
         scene.add(cube);
