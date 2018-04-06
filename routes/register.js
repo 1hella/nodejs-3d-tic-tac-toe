@@ -12,10 +12,14 @@ router.post('/', (req, res) => {
     var user = new User(req.body);
     User.create(user, (err, user) => {
         if (err) {
-            res.end(500, err);
+            res.render('register', {
+                title: 'Register',
+                error: 'Username already taken'
+            });
         } else {
             console.log(`Created user ${user.username}`);
-            res.redirect('../');
+            req.session.user = user;
+            res.redirect('../dashboard');
         }
     });
 });
