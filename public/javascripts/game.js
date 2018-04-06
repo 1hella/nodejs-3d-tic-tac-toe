@@ -7,9 +7,9 @@ animate();
 function init() {
     console.log('running');
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-    camera.position.z = 500;
-    camera.position.x = 600;
-    camera.position.y = 600;
+    camera.position.z = 2000;
+    camera.position.x = 2000;
+    camera.position.y = 2000;
 
     controls = new THREE.TrackballControls(camera);
     controls.addEventListener('change', render);
