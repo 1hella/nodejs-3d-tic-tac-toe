@@ -1,6 +1,7 @@
 var camera, controls, scene, renderer;
-var cube_1;
 var cubes = [];
+var cubeDistance = 350;
+
 init();
 animate();
 function init() {
@@ -19,23 +20,23 @@ function init() {
         
         // x
         if (i % 3 === 1) {
-            cube.position.x = 300;
+            cube.position.x = cubeDistance;
         } else if (i % 3 === 2) {
-            cube.position.x = 600;
+            cube.position.x = cubeDistance * 2;
         }
 
         // y
         if (i % 9 >= 6) {
-            cube.position.y = 600;
+            cube.position.y = cubeDistance * 2;
         } else if (i % 9 >= 3) {
-            cube.position.y = 300;
+            cube.position.y = cubeDistance;
         }
 
         // z
         if (i >= 18) {
-            cube.position.z = 600;
+            cube.position.z = cubeDistance * 2;
         } else if (i >= 9) {
-            cube.position.z = 300;
+            cube.position.z = cubeDistance;
         }
 
         cubes.push(cube);
@@ -106,8 +107,6 @@ function onDocumentMouseDown(event) {
 }
 
 function gameCheck() {
-
-
 
 }
 
