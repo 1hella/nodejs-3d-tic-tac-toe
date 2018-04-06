@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var session = require('express-session');
 
 var index = require('./routes/index');
 var login = require('./routes/login');
@@ -14,16 +15,36 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// session
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: "ayy lmao",
+  maxAge: 1000 * 60 * 30
+}));
+
 // body parsing
 app.use(express.urlencoded({
   extended: false
 }));
 app.use(express.json());
 
-app.use('/', index);
+app.get('/', function(req, res) {
+  res.redirect('/dashboard');
+});
+
+app.use('/dashboard', isLoggedIn, index);
 app.use('/login', login);
 app.use('/register', register);
-app.use('/game', game);
+app.use('/game', isLoggedIn, game);
+
+function isLoggedIn(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

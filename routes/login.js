@@ -24,6 +24,7 @@ router.post('/', (req, res, next) => {
                 error: 'Username or password was incorrect'
             });
         } else {
+            req.session.user = user;
             res.redirect('../');
         }
     });
