@@ -1,0 +1,6 @@
+extends layout
+
+block content
+  .jumbotron
+    h1 Welcome, #{user.username}!
+    a.btn.btn-lg.btn-success(href= base + "/game") Join new game

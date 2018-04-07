@@ -27,4 +27,19 @@ html
     block scripts
   body
     .container
+      .header.clearfix
+        nav
+          ul.nav.nav-pills.pull-right
+            if user
+              li(role="presentation", class= title === 'Dashboard' ? 'active' : undefined): a(href=base + "/dashboard") Dashboard
+              li(role="presentation"): a(href=base + "/logout") Logout
+            else
+              li(role="presentation", class= title === 'Login' ? 'active': undefined): a(href=base + "/login") Login
+
+        h3.text-muted: a(href=base + (user ? "/" : '/login')) 3D Tic Tac Toe
+      
+      if flash
+        .alert.alert-danger
+            p(style="font-size: initial")= flash
+
       block content

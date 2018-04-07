@@ -4,7 +4,8 @@ var User = require('../models/User');
 
 router.get('/', (req, res) => {
     res.render('game', {
-        title: 'Game'
+        title: 'Game',
+        user: req.session.user
     });
 });
 

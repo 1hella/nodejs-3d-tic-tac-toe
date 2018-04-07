@@ -1,11 +1,13 @@
 var express = require('express');
 var path = require('path');
 var session = require('express-session');
+var flash = require('express-flash');
 
-var index = require('./routes/index');
+var dashboard = require('./routes/dashboard');
 var login = require('./routes/login');
 var register = require('./routes/register');
 var game = require('./routes/game');
+var logout = require('./routes/logout');
 
 var app = express();
 
@@ -23,25 +25,29 @@ app.use(session({
   maxAge: 1000 * 60 * 30
 }));
 
+app.use(flash());
+
 // body parsing
 app.use(express.urlencoded({
   extended: false
 }));
 app.use(express.json());
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.redirect('/dashboard');
 });
 
-app.use('/dashboard', isLoggedIn, index);
+app.use('/dashboard', isLoggedIn, dashboard);
 app.use('/login', login);
 app.use('/register', register);
 app.use('/game', isLoggedIn, game);
+app.use('/logout', logout);
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {
     next();
   } else {
+    req.flash('error', 'Login first!');
     res.redirect('/login');
   }
 }

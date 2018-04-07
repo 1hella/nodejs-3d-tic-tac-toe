@@ -3,8 +3,11 @@ var router = express.Router();
 var User = require('../models/User');
 
 router.get('/', function (req, res, next) {
+    var error = req.flash('error');
+    error = error != '' ? error : undefined;
     res.render('login', {
-        title: 'Login'
+        title: 'Login',
+        flash: error
     });
 });
 
