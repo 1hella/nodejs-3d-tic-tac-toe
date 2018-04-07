@@ -6,8 +6,24 @@ var schema = new mongoose.Schema({
         type: String,
         unique: true
     },
+    fname: {
+        type: String
+    },
+    lname: {
+        type: String
+    },
+    gender: {
+        type: String
+    },
+    birthday: {
+        type: Date
+    },
     password: {
         type: String
+    },
+    email: {
+        type: String,
+        lowercase: true
     }
 });
 

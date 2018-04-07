@@ -5,12 +5,30 @@ block content
     h1= title
     form#login-form(action=base + "/register", method="post")
       .lead
-        .form-group.text-left
+        .form-group.text-left(class=error ? "has-error" : undefined)
           label.control-label(for="username") Username:
-          input#username.form-control(type="text", name="username")
-        .form-group.text-left(class=incorrectPassword ? "has-error" : undefined)
+          input#username.form-control(type="text", name="username", value=user ? user.username : "", required)
+        .form-group.text-left
           label.control-label(for="password") Password:
-          input#password.form-control(type="password", name="password")
+          input#password.form-control(type="password", name="password", required)
+        .form-group.text-left
+          label.control-label(for="fname") First name:
+          input#fname.form-control(type="text", name="fname", value=user ? user.fname : "", required)
+        .form-group.text-left
+          label.control-label(for="lname") Last name:
+          input#lname.form-control(type="text", name="lname", value=user ? user.lname : "", required)
+        .form-group.text-left
+          label.control-label(for="birthday") Birthday:
+          input#birthday.form-control(type="date", name="birthday", value=user ? user.birthday.toISOString().substr(0, 10) : "", required)
+        .form-group.text-left
+          label.control-label(for="email") Email:
+          input#email.form-control(type="email", name="email", value=user ? user.email : "", required)
+        .form-group.text-left
+          label.control-label(for="gender") Gender:
+          select#gender.form-control(name="gender", required)
+            option Male
+            option(selected=user && user.gender === 'Female') Female
+            option(selected= user && user.gender === 'Other') Other
         
         if error
           .alert.alert-danger
