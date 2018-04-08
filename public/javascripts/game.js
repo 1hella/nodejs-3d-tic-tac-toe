@@ -1,14 +1,17 @@
 var camera, controls, scene, renderer;
 var cubes = [];
 var cubeDistance = 400;
-var headerHeight = 100;
+var headerHeight = $('.header').innerHeight();
+var $body = $('body');
+var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
+var gameHeight = window.innerHeight - headerHeight - bodyPadding;
 
 init();
 animate();
 function init() {
     console.log('running');
     var $container = $('.container');
-    camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / (window.innerHeight - headerHeight), 1, 20000);
+    camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight, 1, 20000);
     camera.position.z = 2000;
     camera.position.x = 2000;
     camera.position.y = 1500;
@@ -49,7 +52,7 @@ function init() {
     }
 
     renderer = new THREE.WebGLRenderer();
-    renderer.setSize($container.innerWidth(), window.innerHeight - headerHeight)
+    renderer.setSize($container.innerWidth(), gameHeight)
     $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
