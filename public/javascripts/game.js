@@ -1,15 +1,17 @@
 var camera, controls, scene, renderer;
 var cubes = [];
-var cubeDistance = 350;
+var cubeDistance = 400;
+var headerHeight = 100;
 
 init();
 animate();
 function init() {
     console.log('running');
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
+    var $container = $('.container');
+    camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / (window.innerHeight - headerHeight), 1, 20000);
     camera.position.z = 2000;
     camera.position.x = 2000;
-    camera.position.y = 2000;
+    camera.position.y = 1500;
 
     controls = new THREE.TrackballControls(camera);
     controls.addEventListener('change', render);
@@ -47,8 +49,8 @@ function init() {
     }
 
     renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    document.body.appendChild(renderer.domElement);
+    renderer.setSize($container.innerWidth(), window.innerHeight - headerHeight)
+    $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
 
