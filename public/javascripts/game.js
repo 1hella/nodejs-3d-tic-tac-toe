@@ -6,6 +6,11 @@ var $body = $('body');
 var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
 var gameHeight = window.innerHeight - headerHeight - bodyPadding;
 var socket = io();
+socket.emit('new game');
+
+socket.on('new game', (room) => {
+    console.log('joined room ' + room);
+});
 
 $('#chat').submit(function () {
     socket.emit('chat message', $('#m').val());

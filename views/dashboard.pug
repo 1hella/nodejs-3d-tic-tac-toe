@@ -1,6 +1,10 @@
 extends layout
 
+block scripts
+
+
 block content
   .jumbotron
     h1 Welcome, #{user.username}!
-    a.btn.btn-lg.btn-success(href= base + "/game") Join new game
+    a.btn.btn-lg.btn-success.margin-right-sm(href= base + "/game") Create new game
+    button.btn.btn-lg.btn-default Join existing game
