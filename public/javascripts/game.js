@@ -5,8 +5,16 @@ var headerHeight = $('.header').innerHeight();
 var $body = $('body');
 var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
 var gameHeight = window.innerHeight - headerHeight - bodyPadding;
+
 var socket = io();
-socket.emit('new game');
+var search = new URLSearchParams(window.location.search)
+var room = search.get('room');
+
+if (room) {
+    socket.emit('join game', room);
+} else {
+    socket.emit('new game');
+}
 
 socket.on('new game', (room) => {
     console.log('joined room ' + room);
@@ -28,6 +36,7 @@ socket.on('chat meta', function (msg) {
 
 init();
 animate();
+
 function init() {
     console.log('running');
     var $container = $('#game-container');
@@ -40,9 +49,9 @@ function init() {
     controls.addEventListener('change', render);
     scene = new THREE.Scene();
 
-    for (var i= 0; i < 27; i++) {
+    for (var i = 0; i < 27; i++) {
         var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial());
-        
+
         // x
         if (i % 3 === 1) {
             cube.position.x = cubeDistance;
@@ -97,9 +106,9 @@ function init() {
 
 function onDocumentMouseDown(event) {
 
-    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1,   //x
-        -(event.clientY / window.innerHeight) * 2 + 1,  //y
-        0.5);                                            //z
+    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
+        -(event.clientY / window.innerHeight) * 2 + 1, //y
+        0.5); //z
     //  var raycaster = projector.pickingRay( mouse3D.clone(), camera );
     // var intersects = raycaster.intersectObjects( objects );
     var raycaster = new THREE.Raycaster();
@@ -110,8 +119,7 @@ function onDocumentMouseDown(event) {
         console.log(intersects[0].object.material);
         if (intersects[0].object.material.wireframe == true) {
             intersects[0].object.material.wireframe = false;
-        }
-        else {
+        } else {
             intersects[0].object.material.wireframe = true;
         }
         //change color later
@@ -145,4 +153,4 @@ function animate() {
 function render() {
     scene.background = new THREE.Color(0xffffff);
     renderer.render(scene, camera);
-} 
+}

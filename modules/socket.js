@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var data = {};
 module.exports.listen = (server, app) => {
@@ -13,10 +13,9 @@ module.exports.listen = (server, app) => {
             username: 'null'
         };
 
-        io.emit('chat meta', `${user.username} connected`);
-
-        socket.on('disconnect', () => {
-            io.emit('chat meta', `${user.username} disconnected`);
+        socket.on('disconnecting', () => {
+            var room = socket.rooms[Object.keys(socket.rooms)[0]];
+            io.in(room).emit('chat meta', `${user.username} left the room`);
         });
 
         socket.on('chat message', (msg) => {
@@ -28,15 +27,16 @@ module.exports.listen = (server, app) => {
             var room = rooms;
             socket.join(room);
             socket.emit('new game', room);
-            socket.emit('chat meta', 'Waiting for other player...');
+            socket.emit('chat meta', `${user.username} joined the room`);
             socket.emit('chat meta', `Tell your friend to join room ${room}!`);
         });
 
         socket.on('join game', function (room) {
             var data = checkRoom(room);
-            
+
             if (data.room && !data.error) {
                 socket.join(room);
+                io.in(room).emit('chat meta', `${user.username} joined the room`);
             } else if (data.error) {
                 socket.emit('err', data.error);
             }
@@ -51,13 +51,13 @@ function checkRoom(room) {
     var results = {};
     var room = data.io.nsps['/'].adapter.rooms[room];
     results.room = room;
-    
+
     if (!room) {
         results.error = 'That room doesn\'t exist!';
     } else if (room.length > 1) {
         results.error = 'Sorry, that room is full!';
     }
-    
+
     return results;
 }
 
