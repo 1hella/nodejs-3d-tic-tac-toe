@@ -8,6 +8,7 @@ var login = require('./routes/login');
 var register = require('./routes/register');
 var game = require('./routes/game');
 var logout = require('./routes/logout');
+var checkRoom = require('./routes/checkRoom');
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use('/login', login);
 app.use('/register', register);
 app.use('/game', isLoggedIn, game);
 app.use('/logout', logout);
+app.use('/checkRoom', checkRoom);
 
 function isLoggedIn(req, res, next) {
   if (req.session.user) {

@@ -1,10 +1,14 @@
 extends layout
 
 block scripts
-
+  script(src=base + '/javascripts/dashboard.js')
 
 block content
   .jumbotron
     h1 Welcome, #{user.username}!
-    a.btn.btn-lg.btn-success.margin-right-sm(href= base + "/game") Create new game
-    button.btn.btn-lg.btn-default Join existing game
+    .lead
+      a.btn.btn-lg.btn-success.margin-right-sm(href= base + "/game") Create new game
+      button.btn.btn-lg.btn-default#join-existing Join existing game
+    
+    #error.alert.alert-danger.hidden
+            p(style="font-size: initial")= error

@@ -1,8 +1,7 @@
 'use strict'
 
 var data = {};
-
-module.exports = (server, app) => {
+module.exports.listen = (server, app) => {
     var io = require('socket.io').listen(server);
     var sharedsession = require("express-socket.io-session");
     var rooms = 1000;
@@ -13,6 +12,7 @@ module.exports = (server, app) => {
         var user = socket.handshake.session.user || {
             username: 'null'
         };
+
         io.emit('chat meta', `${user.username} connected`);
 
         socket.on('disconnect', () => {
@@ -31,10 +31,35 @@ module.exports = (server, app) => {
             socket.emit('chat meta', 'Waiting for other player...');
             socket.emit('chat meta', `Tell your friend to join room ${room}!`);
         });
+
+        socket.on('join game', function (room) {
+            var data = checkRoom(room);
+            
+            if (data.room && !data.error) {
+                socket.join(room);
+            } else if (data.error) {
+                socket.emit('err', data.error);
+            }
+        });
     });
 
     data.io = io;
     return io;
+};
+
+function checkRoom(room) {
+    var results = {};
+    var room = data.io.nsps['/'].adapter.rooms[room];
+    results.room = room;
+    
+    if (!room) {
+        results.error = 'That room doesn\'t exist!';
+    } else if (room.length > 1) {
+        results.error = 'Sorry, that room is full!';
+    }
+    
+    return results;
 }
 
-module.exports.io = data.io;
+module.exports.checkRoom = checkRoom;
+module.exports.io = () => data.io;
