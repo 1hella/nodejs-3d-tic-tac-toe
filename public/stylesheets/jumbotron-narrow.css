@@ -40,7 +40,7 @@ body {
 /* Customize container */
 
 @media (min-width: 768px) {
-    .container {
+    .narrow {
         max-width: 730px;
     }
 }

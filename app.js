@@ -18,12 +18,13 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, 'public')));
 
 // session
-app.use(session({
+var mySession = session({
   resave: false,
   saveUninitialized: true,
   secret: "ayy lmao",
   maxAge: 1000 * 60 * 30
-}));
+});
+app.use(mySession);
 
 app.use(flash());
 
@@ -70,3 +71,4 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+module.exports.session = mySession;

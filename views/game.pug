@@ -4,6 +4,15 @@ block scripts
   script(src=base + "/javascripts/three.min.js")
   //- <script src='threex.domevent.js'></script>
   script(src=base + "/javascripts/TrackballControls.js")
+  script(src=base + '/socket.io/socket.io.js')
   script(src=base + '/javascripts/game.js' defer)
+  link(rel="stylesheet", href="stylesheets/chat.css")
 
 block content
+  .row
+    .col-md-8#game-container
+    .col-md-4
+      ul#messages
+      form#chat(action="")
+        input#m(autocomplete="off")
+        button Send

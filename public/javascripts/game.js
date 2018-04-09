@@ -5,18 +5,33 @@ var headerHeight = $('.header').innerHeight();
 var $body = $('body');
 var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
 var gameHeight = window.innerHeight - headerHeight - bodyPadding;
+var socket = io();
+
+$('#chat').submit(function () {
+    socket.emit('chat message', $('#m').val());
+    $('#m').val('');
+    return false;
+});
+
+socket.on('chat message', function (msg) {
+    $('#messages').append($('<li>').text(msg));
+});
+
+socket.on('chat meta', function (msg) {
+    $('#messages').append($('<li class="chat-meta">').text(msg));
+});
 
 init();
 animate();
 function init() {
     console.log('running');
-    var $container = $('.container');
+    var $container = $('#game-container');
     camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight, 1, 20000);
     camera.position.z = 2000;
     camera.position.x = 2000;
     camera.position.y = 1500;
 
-    controls = new THREE.TrackballControls(camera);
+    controls = new THREE.TrackballControls(camera, $container[0]);
     controls.addEventListener('change', render);
     scene = new THREE.Scene();
 
