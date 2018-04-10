@@ -45,6 +45,10 @@ module.exports.listen = (server, app) => {
                 socket.emit('err', data.error);
             }
         });
+
+        socket.on('game move', board => {
+            socket.to(getRoom()).emit('opponent move', board);
+        });
     });
 
     data.io = io;

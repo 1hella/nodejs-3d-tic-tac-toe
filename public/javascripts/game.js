@@ -7,28 +7,48 @@ var $container = $('#game-container');
 var socket = io();
 var search = new URLSearchParams(window.location.search)
 var room = search.get('room');
+const BOARD_COLOR = 0x9932CC;
+const PLAYER_1_COLOR = 0xff0000;
+const PLAYER_2_COLOR = 0x0000ff;
 
-var isTurn = false;
+var board = new Array(27);
+board.fill(0);
+
+var isTurn;
+var isPlayer1;
 
 if (room) {
     // player 2
     socket.emit('join game', room);
-    setStatus('Waiting for other player');
+    setTurn(false);
+    isPlayer1 = false;
 } else {
     // player 1
     socket.emit('new game');
-    setStatus('Waiting for other player');
+    setTurn(false);
+    isPlayer1 = true;
 }
 
 // player 1
-socket.on('new game', (room) => {
+socket.on('new game', room => {
     console.log('joined room ' + room);
 });
 
 // player 1
 socket.on('player joined', () => {
-    isTurn = true;
+    setTurn(true);
     setStatus("It's your turn!");
+});
+
+socket.on('opponent move', serverBoard => {
+    board = serverBoard;
+    drawBoard();
+    setTurn(true);
+});
+
+socket.on('err', (err) => {
+    alert(err);
+    window.location = '/';
 });
 
 socket.on('chat message', (msg) => {
@@ -47,11 +67,34 @@ function setStatus(msg) {
     $('#status').text(msg);
 }
 
+function setTurn(turn) {
+    isTurn = turn;
+    if (turn) {
+        setStatus('It\'s your turn!');
+    } else {
+        setStatus('Waiting for other player');
+    }
+}
+
 $('#chat').submit(function () {
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
     return false;
 });
+
+function drawBoard() {
+    for (var i = 0; i < board.length; i++) {
+        var cube = cubes[i];
+        var move = board[i];
+        if (move === 0) {
+            cube.material.color.setHex(BOARD_COLOR);
+        } else if (move === 1) {
+            cube.material.color.setHex(PLAYER_1_COLOR);
+        } else {
+            cube.material.color.setHex(PLAYER_2_COLOR);
+        }
+    }
+}
 
 init();
 animate();
@@ -75,7 +118,7 @@ function init() {
 
     for (var i = 0; i < 27; i++) {
         var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshLambertMaterial({
-            color: Math.random() * 0xffffff
+            color: BOARD_COLOR
         }));
 
         // x
@@ -110,7 +153,7 @@ function init() {
     // renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
-    document.addEventListener('click', onDocumentMouseDown, false);
+    $container[0].addEventListener('click', onDocumentMouseDown, false);
     $container[0].addEventListener('mousemove', onDocumentMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
 }
@@ -132,33 +175,40 @@ function init() {
 
 
 function onDocumentMouseDown(event) {
-
     var mouse3D = new THREE.Vector3(mouse.x, //x
         mouse.y, //y
         0.5); //z
     //  var raycaster = projector.pickingRay( mouse3D.clone(), camera );
     // var intersects = raycaster.intersectObjects( objects );
-    
+
     raycaster.setFromCamera(mouse3D, camera);
     var intersects = raycaster.intersectObjects(scene.children);
     // Change color if hit block
     if (intersects.length > 0) {
-        console.log(intersects[0].object.material);
-        if (intersects[0].object.material.wireframe == true) {
-            intersects[0].object.material.wireframe = false;
-        } else {
-            intersects[0].object.material.wireframe = true;
+        if (!isTurn) {
+            alert('it\'s not your turn!');
+            return;
         }
-        //change color later
-        // if(intersects[ 0 ].object.material.color.getHexString() == '00fbff'){//if blue
-        //     intersects[ 0 ].object.material.color.setHex(0x000000);//then black
-        // }
-        // else if(intersects[ 0 ].object.material.color.getHexString() == '000000'){//if black
-        //     intersects[ 0 ].object.material.color.setHex (0x00FBFF);//else blue
-        // }
-        // else if(intersects[ 0 ].object.material.color.getHexString() == 'ffffff'){
-        //     intersects[ 0 ].object.material.color.setHex (0x00FBFF);   
-        // }
+
+        var cube = intersects[0].object;
+        var index = cubes.indexOf(cube);
+        console.log(index);
+
+        if (board[index] === 0) {
+            board[index] = isPlayer1 ? 1 : 2;
+            socket.emit('game move', board);
+        } else {
+            alert('You can\'t go there!');
+            return;
+        }
+
+        if (isPlayer1) {
+            cube.material.color.setHex(PLAYER_1_COLOR);
+        } else {
+            cube.material.color.setHex(PLAYER_2_COLOR);
+        }
+
+        setTurn(false);
 
         //Game check function is initiated from here 
         gameCheck();
@@ -170,7 +220,7 @@ function onDocumentMouseDown(event) {
 function onDocumentMouseMove(event) {
     event.preventDefault();
     mouse.x = ((event.clientX - $container[0].offsetLeft) / renderer.domElement.width) * 2 - 1;
-    mouse.y = - ((event.clientY - $container[0].offsetTop) / renderer.domElement.height) * 2 + 1;
+    mouse.y = -((event.clientY - $container[0].offsetTop) / renderer.domElement.height) * 2 + 1;
 }
 
 
@@ -225,5 +275,5 @@ function gameHeight() {
 }
 
 function offSetTop() {
-    
+
 }
