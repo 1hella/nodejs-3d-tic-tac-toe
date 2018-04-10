@@ -157,11 +157,13 @@ function getMoveCount() {
     return board.filter(move => move !== 0).length;
 }
 
-$('#chat').submit(function () {
+$('#chat').submit(() => {
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
     return false;
 });
+
+$('#reset-camera').click(resetCamera);
 
 function drawBoard() {
     for (var i = 0; i < board.length; i++) {
@@ -180,14 +182,18 @@ function drawBoard() {
 init();
 animate();
 
+function resetCamera() {
+    camera.position.z = 2000;
+    camera.position.x = 2000;
+    camera.position.y = 1500;
+}
+
 function init() {
     console.log('running');
     raycaster = new THREE.Raycaster();
 
     camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight(), 1, 20000);
-    camera.position.z = 2000;
-    camera.position.x = 2000;
-    camera.position.y = 1500;
+    resetCamera();
 
     controls = new THREE.TrackballControls(camera, $container[0]);
     controls.addEventListener('change', render);
