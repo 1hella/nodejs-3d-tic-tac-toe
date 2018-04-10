@@ -106,8 +106,8 @@ function init() {
 
 function onDocumentMouseDown(event) {
 
-    var mouse3D = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, //x
-        -(event.clientY / window.innerHeight) * 2 + 1, //y
+    var mouse3D = new THREE.Vector3((event.clientX / $container.innerWidth()) * 2 - 1, //x
+        -(event.clientY / $container.innerHeight()) * 2 + 1, //y
         0.5); //z
     //  var raycaster = projector.pickingRay( mouse3D.clone(), camera );
     // var intersects = raycaster.intersectObjects( objects );
