@@ -32,7 +32,7 @@ socket.on('player joined', () => {
 });
 
 socket.on('chat message', (msg) => {
-    $('#messages').prepend($('<li>').text(msg));
+    $('#messages').append($('<li>').text(msg));
 });
 
 socket.on('chat meta', (msg) => {
@@ -40,7 +40,7 @@ socket.on('chat meta', (msg) => {
 });
 
 function addChatMeta(msg) {
-    $('#messages').prepend($('<li class="chat-meta">').text(msg));
+    $('#messages').append($('<li class="chat-meta">').text(msg));
 }
 
 function setStatus(msg) {
