@@ -149,7 +149,6 @@ function onDocumentMouseDown(event) {
 function onDocumentMouseMove(event) {
     event.preventDefault();
     mouse.x = ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width) * 2 - 1.546875;
-    console.log(mouse.x);
     mouse.y = - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1.2875;
 }
 
