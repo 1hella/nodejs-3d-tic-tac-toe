@@ -11,6 +11,70 @@ const BOARD_COLOR = 0x9932CC;
 const PLAYER_1_COLOR = 0xff0000;
 const PLAYER_2_COLOR = 0x0000ff;
 
+const WINNING_COMBINATIONS = [
+    // horizontal
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [9, 10, 11],
+    [12, 13, 14],
+    [15, 16, 17],
+    [18, 19, 20],
+    [21, 22, 23],
+    [24, 25, 26],
+
+    // horizontal other way
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [9, 12, 15],
+    [10, 13, 16],
+    [11, 14, 17],
+    [18, 21, 24],
+    [19, 22, 25],
+    [20, 23, 26],
+
+    // horizontal diagonals
+    [0, 4, 8],
+    [2, 4, 6],
+    [9, 13, 17],
+    [11, 13, 15],
+    [18, 22, 26],
+    [20, 22, 24],
+
+    // vertical
+    [0, 9, 18],
+    [1, 10, 19],
+    [2, 11, 20],
+    [3, 12, 21],
+    [4, 13, 22],
+    [5, 14, 23],
+    [6, 15, 24],
+    [7, 16, 25],
+    [8, 17, 26],
+
+    //  top edge to bottom edge diagonals
+    [0, 10, 20],
+    [18, 10, 2],
+    [3, 13, 23],
+    [21, 13, 5],
+    [6, 16, 26],
+    [24, 16, 8],
+
+    [0, 12, 24],
+    [6, 12, 18],
+    [1, 13, 25],
+    [7, 13, 19],
+    [2, 14, 26],
+    [8, 14, 20],
+
+    // top corner to opposite bottom corner diagonals
+    [0, 13, 26],
+    [2, 13, 24],
+    [6, 13, 20],
+    [8, 13, 18]
+];
+
 var board = new Array(27);
 board.fill(0);
 
@@ -43,8 +107,15 @@ socket.on('player joined', () => {
 socket.on('opponent move', serverBoard => {
     board = serverBoard;
     drawBoard();
-    setTurn(true);
+    if (!checkForWinner()) {
+        setTurn(true);
+    }
 });
+
+socket.on('game lose', winner => {
+    alert(winner + ' wins!');
+    location = '/';
+})
 
 socket.on('err', (err) => {
     alert(err);
@@ -74,6 +145,10 @@ function setTurn(turn) {
     } else {
         setStatus('Waiting for other player');
     }
+}
+
+function getMoveCount() {
+    return board.filter(move => move !== 0).length;
 }
 
 $('#chat').submit(function () {
@@ -158,41 +233,21 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 }
 
-// function onDocumentMouseDown( event ) {                
-//     var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1,   //x
-//                             -( event.clientY / window.innerHeight ) * 2 + 1,  //y
-//                             0.5 );                                            //z
-//     projector.unprojectVector( mouse3D, camera );   
-//     mouse3D.sub( camera.position );                
-//     mouse3D.normalize();
-//     var raycaster = new THREE.Raycaster( camera.position, mouse3D );
-//     var intersects = raycaster.intersectObjects( objects );
-//         // Change color if hit block
-//     if ( intersects.length > 0 ) {
-//           intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-//     }
-//  }
-
-
 function onDocumentMouseDown(event) {
-    var mouse3D = new THREE.Vector3(mouse.x, //x
-        mouse.y, //y
-        0.5); //z
-    //  var raycaster = projector.pickingRay( mouse3D.clone(), camera );
-    // var intersects = raycaster.intersectObjects( objects );
+    var mouse3D = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 
     raycaster.setFromCamera(mouse3D, camera);
     var intersects = raycaster.intersectObjects(scene.children);
-    // Change color if hit block
+    
     if (intersects.length > 0) {
+        var cube = intersects[0].object;
+        var index = cubes.indexOf(cube);
+        console.log(index);
+
         if (!isTurn) {
             alert('it\'s not your turn!');
             return;
         }
-
-        var cube = intersects[0].object;
-        var index = cubes.indexOf(cube);
-        console.log(index);
 
         if (board[index] === 0) {
             board[index] = isPlayer1 ? 1 : 2;
@@ -209,10 +264,7 @@ function onDocumentMouseDown(event) {
         }
 
         setTurn(false);
-
-        //Game check function is initiated from here 
-        gameCheck();
-
+        checkForWinner();
     }
 }
 
@@ -232,8 +284,31 @@ function onWindowResize() {
 
 
 
-function gameCheck() {
+function checkForWinner() {
+    if (getMoveCount >= 27) {
+        socket.emit('tie');
+        alert('Tie!');
+        window.location = '/';
+        return;
+    }
 
+    playerNumber = isPlayer1 ? 1 : 2;
+    for (winningCombination of WINNING_COMBINATIONS) {
+        if (board[winningCombination[0]] === board[winningCombination[1]] &&
+            board[winningCombination[1]] === board[winningCombination[2]] &&
+            board[winningCombination[0]] !== 0) {
+            if (board[winningCombination[0]] === playerNumber) {
+                socket.emit('game win', {
+                    numMoves: getMoveCount,
+                    board: board
+                });
+                alert('You win!');
+                window.location = '/';
+            } else {
+                return true;
+            }
+        }
+    }
 }
 
 
@@ -248,7 +323,6 @@ function render() {
     camera.lookAt(scene.position);
     camera.updateMatrixWorld();
 
-    // find intersections
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
@@ -272,8 +346,4 @@ function gameHeight() {
     var $body = $('body');
     var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
     return Math.floor(window.innerHeight - headerHeight - bodyPadding) - chatHeight - statusHeight;
-}
-
-function offSetTop() {
-
 }

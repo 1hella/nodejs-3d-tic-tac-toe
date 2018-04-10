@@ -49,6 +49,11 @@ module.exports.listen = (server, app) => {
         socket.on('game move', board => {
             socket.to(getRoom()).emit('opponent move', board);
         });
+
+        socket.on('game win', data => {
+            socket.to(getRoom()).emit('game lose', user.username);
+            // store stats
+        });
     });
 
     data.io = io;
