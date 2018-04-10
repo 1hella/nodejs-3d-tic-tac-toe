@@ -1,5 +1,6 @@
+'use strict';
+
 var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
 
 var schema = new mongoose.Schema({
     username: {
@@ -34,8 +35,6 @@ var schema = new mongoose.Schema({
         default: 0,
     }
 });
-
-schema.plugin(uniqueValidator);
 
 var User = mongoose.model('User', schema);
 
