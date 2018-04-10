@@ -36,7 +36,7 @@ html
             else
               li(role="presentation", class= title === 'Login' ? 'active': undefined): a(href=base + "/login") Login
 
-        h3.text-muted: a(href=base + (user ? "/" : '/login')) 3D Tic Tac Toe
+        h3.text-muted: a(href=base + (user ? "/dashboard" : '/login')) 3D Tic Tac Toe
       
       if flash
         .alert.alert-danger

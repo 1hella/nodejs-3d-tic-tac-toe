@@ -36,7 +36,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.get('/', function (req, res) {
-  res.redirect('/dashboard');
+  res.redirect('/login');
 });
 
 app.use('/dashboard', isLoggedIn, dashboard);

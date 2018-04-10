@@ -1,10 +1,13 @@
 var express = require('express');
 var router = express.Router();
+var User = require('../models/User');
 
 router.get('/', function (req, res, next) {
-  res.render('dashboard', {
-    title: 'Dashboard',
-    user: req.session.user
+  User.findOne({ username: req.session.user.username }, (err, user) => {
+    res.render('dashboard', {
+      title: 'Dashboard',
+      user: user
+    });
   });
 });
 
