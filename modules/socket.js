@@ -9,17 +9,20 @@ module.exports.listen = (server, app) => {
     io.use(sharedsession(app.session));
 
     io.on('connection', (socket) => {
+
+        var getRoom = () => socket.rooms[Object.keys(socket.rooms)[0]];
+
         var user = socket.handshake.session.user || {
             username: 'null'
         };
 
         socket.on('disconnecting', () => {
-            var room = socket.rooms[Object.keys(socket.rooms)[0]];
+            var room = getRoom();
             io.in(room).emit('chat meta', `${user.username} left the room`);
         });
 
         socket.on('chat message', (msg) => {
-            io.emit('chat message', `${user.username}: ${msg}`);
+            io.in(getRoom()).emit('chat message', `${user.username}: ${msg}`);
         });
 
         socket.on('new game', () => {
