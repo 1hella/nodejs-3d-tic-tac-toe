@@ -1,12 +1,9 @@
-var camera, controls, scene, renderer;
+var camera, controls, scene, renderer, raycaster;
+var mouse = new THREE.Vector2(),
+    INTERSECTED;
 var cubes = [];
 var cubeDistance = 400;
-var headerHeight = $('.header').innerHeight();
-var $body = $('body');
-var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
-var gameHeight = window.innerHeight - headerHeight - bodyPadding;
 var $container = $('#game-container');
-
 var socket = io();
 var search = new URLSearchParams(window.location.search)
 var room = search.get('room');
@@ -37,11 +34,12 @@ socket.on('chat meta', function (msg) {
 
 init();
 animate();
-render();
 
 function init() {
     console.log('running');
-    camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight, 1, 20000);
+    raycaster = new THREE.Raycaster();
+
+    camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight(), 1, 20000);
     camera.position.z = 2000;
     camera.position.x = 2000;
     camera.position.y = 1500;
@@ -50,8 +48,14 @@ function init() {
     controls.addEventListener('change', render);
     scene = new THREE.Scene();
 
+    var light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
     for (var i = 0; i < 27; i++) {
-        var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial());
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshLambertMaterial({
+            color: Math.random() * 0xffffff
+        }));
 
         // x
         if (i % 3 === 1) {
@@ -84,10 +88,13 @@ function init() {
     scene.background = new THREE.Color(0xffffff);
 
     renderer = new THREE.WebGLRenderer();
-    renderer.setSize($container.innerWidth(), gameHeight);
+    renderer.setSize($container.innerWidth(), gameHeight());
+    renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    window.addEventListener('resize', onWindowResize, false);
 }
 
 // function onDocumentMouseDown( event ) {                
@@ -108,12 +115,12 @@ function init() {
 
 function onDocumentMouseDown(event) {
 
-    var mouse3D = new THREE.Vector3((event.clientX / $container.innerWidth()) * 2 - 1, //x
-        -(event.clientY / $container.innerHeight()) * 2 + 1, //y
+    var mouse3D = new THREE.Vector3(mouse.x, //x
+        mouse.y, //y
         0.5); //z
     //  var raycaster = projector.pickingRay( mouse3D.clone(), camera );
     // var intersects = raycaster.intersectObjects( objects );
-    var raycaster = new THREE.Raycaster();
+    
     raycaster.setFromCamera(mouse3D, camera);
     var intersects = raycaster.intersectObjects(scene.children);
     // Change color if hit block
@@ -141,6 +148,22 @@ function onDocumentMouseDown(event) {
     }
 }
 
+
+function onDocumentMouseMove(event) {
+    event.preventDefault();
+    mouse.x = (event.clientX / $container.innerWidth()) * 2 - 1;
+    mouse.y = -(event.clientY / gameHeight()) * 2 + 1;
+}
+
+
+function onWindowResize() {
+    camera.aspect = $container.innerWidth() / gameHeight();
+    camera.updateProjectionMatrix();
+    renderer.setSize($container.innerWidth(), gameHeight());
+}
+
+
+
 function gameCheck() {
 
 }
@@ -154,5 +177,29 @@ function animate() {
 
 
 function render() {
+    camera.lookAt(scene.position);
+    camera.updateMatrixWorld();
+
+    // find intersections
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+        if (INTERSECTED != intersects[0].object) {
+            if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+            INTERSECTED = intersects[0].object;
+            INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+            INTERSECTED.material.emissive.setHex(0xff0000);
+        }
+    } else {
+        if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+        INTERSECTED = null;
+    }
     renderer.render(scene, camera);
+}
+
+function gameHeight() {
+    var headerHeight = $('.header').innerHeight();
+    var $body = $('body');
+    var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
+    return Math.floor(window.innerHeight - headerHeight - bodyPadding);
 }
