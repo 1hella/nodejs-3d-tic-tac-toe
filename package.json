@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node-dev ./bin/www"
+    "start": "node-dev ./bin/www",
+    "csil": "PORT=24606 MONGO_URL=\"mongodb://swanhell:$wx5QSOy7@localhost:27017/cmpt218_swanhell\" pm2 start ./bin/www"
   },
   "dependencies": {
     "express": "^4.16.3",
