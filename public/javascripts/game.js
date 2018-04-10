@@ -79,9 +79,6 @@ function init() {
         }
 
         cubes.push(cube);
-    }
-
-    for (var cube of cubes) {
         scene.add(cube);
     }
 
@@ -89,7 +86,7 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize($container.innerWidth(), gameHeight());
-    renderer.setPixelRatio(window.devicePixelRatio);
+    // renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
@@ -151,8 +148,8 @@ function onDocumentMouseDown(event) {
 
 function onDocumentMouseMove(event) {
     event.preventDefault();
-    mouse.x = (event.clientX / $container.innerWidth()) * 2 - 1;
-    mouse.y = -(event.clientY / gameHeight()) * 2 + 1;
+    mouse.x = ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width) * 2 - 1;
+    mouse.y = - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
 }
 
 
