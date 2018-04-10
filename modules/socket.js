@@ -1,4 +1,6 @@
 'use strict';
+var GameStats = require('../models/GameStats');
+var User = require('../models/User');
 
 var data = {};
 module.exports.listen = (server, app) => {
@@ -32,6 +34,15 @@ module.exports.listen = (server, app) => {
             socket.emit('new game', room);
             socket.emit('chat meta', `${user.username} joined the room`);
             socket.emit('chat meta', `Tell your friend to join room ${room}!`);
+            GameStats.create({
+                room: room,
+                ongoing: true,
+                players: [user.username]
+            }, (err, res) => {
+                if (err) {
+                    console.log('error');
+                }
+            });
         });
 
         socket.on('join game', function (room) {
@@ -41,6 +52,21 @@ module.exports.listen = (server, app) => {
                 socket.join(room);
                 io.in(room).emit('chat meta', `${user.username} joined the room`);
                 socket.to(room).emit('player joined');
+                GameStats.findOneAndUpdate({
+                    room: room,
+                    ongoing: true
+                }, {
+                    $set: {
+                        timeStarted: new Date
+                    },
+                    $push: {
+                        players: user.username
+                    }
+                }, err => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
             } else if (data.error) {
                 socket.emit('err', data.error);
             }
@@ -52,7 +78,49 @@ module.exports.listen = (server, app) => {
 
         socket.on('game win', data => {
             socket.to(getRoom()).emit('game lose', user.username);
-            // store stats
+            GameStats.findOne({
+                room: getRoom(),
+                ongoing: true
+            }, (err, gameStat) => {
+                if (err) {
+                    console.log('error finding gamestat on game win');
+                } else {
+                    gameStat.winner = user.username;
+                    gameStat.numMoves = data.numMoves;
+                    gameStat.ongoing = false;
+                    gameStat.loser = gameStat.players.filter(player => player !== user.username)[0];
+
+                    User.findOneAndUpdate({
+                        username: gameStat.winner
+                    }, {
+                        $inc: {
+                            wins: 1
+                        }
+                    }, err => {
+                        if (err) {
+                            console.log('couldn\'t increment user wins');
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        username: gameStat.loser
+                    }, {
+                        $inc: {
+                            losses: 1
+                        }
+                    }, err => {
+                        if (err) {
+                            console.log('couldn\'t increment user wins');
+                        }
+                    });
+
+                    gameStat.save(err => {
+                        if (err) {
+                            console.log('couldn\'t update gameStat');
+                        }
+                    });
+                }
+            });
         });
     });
 
