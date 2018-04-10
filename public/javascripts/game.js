@@ -37,6 +37,7 @@ socket.on('chat meta', function (msg) {
 
 init();
 animate();
+render();
 
 function init() {
     console.log('running');
@@ -80,12 +81,13 @@ function init() {
         scene.add(cube);
     }
 
+    scene.background = new THREE.Color(0xffffff);
+
     renderer = new THREE.WebGLRenderer();
-    renderer.setSize($container.innerWidth(), gameHeight)
+    renderer.setSize($container.innerWidth(), gameHeight);
     $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
-
 }
 
 // function onDocumentMouseDown( event ) {                
@@ -147,10 +149,10 @@ function gameCheck() {
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
+    render();
 }
 
 
 function render() {
-    scene.background = new THREE.Color(0xffffff);
     renderer.render(scene, camera);
 }
