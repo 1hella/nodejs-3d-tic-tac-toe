@@ -90,7 +90,7 @@ function init() {
     $container.append(renderer.domElement);
 
     document.addEventListener('click', onDocumentMouseDown, false);
-    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    $container[0].addEventListener('mousemove', onDocumentMouseMove, false);
     window.addEventListener('resize', onWindowResize, false);
 }
 
@@ -148,8 +148,8 @@ function onDocumentMouseDown(event) {
 
 function onDocumentMouseMove(event) {
     event.preventDefault();
-    mouse.x = ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width) * 2 - 1.546875;
-    mouse.y = - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1.2875;
+    mouse.x = ((event.clientX - $container[0].offsetLeft) / renderer.domElement.width) * 2 - 1;
+    mouse.y = - ((event.clientY - $container[0].offsetTop) / renderer.domElement.height) * 2 + 1;
 }
 
 
@@ -199,4 +199,8 @@ function gameHeight() {
     var $body = $('body');
     var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
     return Math.floor(window.innerHeight - headerHeight - bodyPadding);
+}
+
+function offSetTop() {
+    
 }
