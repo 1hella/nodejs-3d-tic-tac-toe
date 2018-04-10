@@ -84,7 +84,8 @@ var isPlayer1;
 if (room) {
     // player 2
     socket.emit('join game', room);
-    setTurn(false);
+    isTurn = false;
+    setStatus('Waiting for other player to join');
     isPlayer1 = false;
 } else {
     // player 1
