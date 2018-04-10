@@ -5,6 +5,7 @@ var headerHeight = $('.header').innerHeight();
 var $body = $('body');
 var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
 var gameHeight = window.innerHeight - headerHeight - bodyPadding;
+var $container = $('#game-container');
 
 var socket = io();
 var search = new URLSearchParams(window.location.search)
@@ -39,7 +40,6 @@ animate();
 
 function init() {
     console.log('running');
-    var $container = $('#game-container');
     camera = new THREE.PerspectiveCamera(45, $container.innerWidth() / gameHeight, 1, 20000);
     camera.position.z = 2000;
     camera.position.x = 2000;
