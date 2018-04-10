@@ -49,7 +49,7 @@ function init() {
     scene = new THREE.Scene();
 
     var light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1).normalize();
+    light.position.set(2000, 2000, 1500).normalize();
     scene.add(light);
 
     for (var i = 0; i < 27; i++) {
@@ -148,8 +148,9 @@ function onDocumentMouseDown(event) {
 
 function onDocumentMouseMove(event) {
     event.preventDefault();
-    mouse.x = ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width) * 2 - 1;
-    mouse.y = - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
+    mouse.x = ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width) * 2 - 1.546875;
+    console.log(mouse.x);
+    mouse.y = - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1.2875;
 }
 
 
