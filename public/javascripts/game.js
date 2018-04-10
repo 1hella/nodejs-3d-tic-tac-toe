@@ -114,12 +114,17 @@ socket.on('opponent move', serverBoard => {
 
 socket.on('game lose', winner => {
     alert(winner + ' wins!');
-    location = '/';
+    location = '/dashboard';
+})
+
+socket.on('user disconnected', username => {
+    alert(username + ' disconnected! You win!');
+    location = '/dashboard';
 })
 
 socket.on('err', (err) => {
     alert(err);
-    window.location = '/';
+    window.location = '/dashboard';
 });
 
 socket.on('chat message', (msg) => {
@@ -288,7 +293,7 @@ function checkForWinner() {
     if (getMoveCount >= 27) {
         socket.emit('tie');
         alert('Tie!');
-        window.location = '/';
+        window.location = '/dashboard';
         return;
     }
 
@@ -303,7 +308,7 @@ function checkForWinner() {
                     board: board
                 });
                 alert('You win!');
-                window.location = '/';
+                window.location = '/dashboard';
             } else {
                 return true;
             }

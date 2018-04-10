@@ -21,6 +21,45 @@ module.exports.listen = (server, app) => {
         socket.on('disconnecting', () => {
             var room = getRoom();
             io.in(room).emit('chat meta', `${user.username} left the room`);
+            
+            var roomData = data.io.nsps['/'].adapter.rooms[room];
+            if (roomData.length === 2) {
+                GameStats.findOne({
+                    room: getRoom(),
+                    ongoing: true
+                }, (err, gameStat) => {
+                    if (err) {
+                        console.log('error finding gamestat on game win');
+                    } else if (gameStat) {
+                        socket.to(room).emit('user disconnected', user.username);
+                        gameStat.loser = user.username;
+                        gameStat.ongoing = false;
+                        gameStat.winner = gameStat.players.filter(player => player !== user.username)[0];
+
+                        incrementWins(gameStat.winner);
+                        incrementLosses(gameStat.loser);
+
+                        gameStat.save(err => {
+                            if (err) {
+                                console.log('couldn\'t update gameStat');
+                            }
+                        });
+                    }
+                });
+            } else if (roomData.length === 1) {
+                GameStats.findOneAndUpdate({
+                    room: getRoom(),
+                    ongoing: true
+                }, {
+                    $set: {
+                        ongoing: false
+                    }
+                }, err => {
+                    if (err) {
+                        console.log('could not set ongoing to false');
+                    }
+                });
+            }
         });
 
         socket.on('chat message', (msg) => {
@@ -90,29 +129,8 @@ module.exports.listen = (server, app) => {
                     gameStat.ongoing = false;
                     gameStat.loser = gameStat.players.filter(player => player !== user.username)[0];
 
-                    User.findOneAndUpdate({
-                        username: gameStat.winner
-                    }, {
-                        $inc: {
-                            wins: 1
-                        }
-                    }, err => {
-                        if (err) {
-                            console.log('couldn\'t increment user wins');
-                        }
-                    });
-
-                    User.findOneAndUpdate({
-                        username: gameStat.loser
-                    }, {
-                        $inc: {
-                            losses: 1
-                        }
-                    }, err => {
-                        if (err) {
-                            console.log('couldn\'t increment user wins');
-                        }
-                    });
+                    incrementWins(gameStat.winner);
+                    incrementLosses(gameStat.loser);
 
                     gameStat.save(err => {
                         if (err) {
@@ -127,6 +145,34 @@ module.exports.listen = (server, app) => {
     data.io = io;
     return io;
 };
+
+function incrementWins(username) {
+    User.findOneAndUpdate({
+        username: username
+    }, {
+        $inc: {
+            wins: 1
+        }
+    }, err => {
+        if (err) {
+            console.log('couldn\'t increment user wins');
+        }
+    });
+}
+
+function incrementLosses(username) {
+    User.findOneAndUpdate({
+        username: username
+    }, {
+        $inc: {
+            losses: 1
+        }
+    }, err => {
+        if (err) {
+            console.log('couldn\'t increment user wins');
+        }
+    });
+}
 
 function checkRoom(room) {
     var results = {};
