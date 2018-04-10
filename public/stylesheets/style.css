@@ -56,6 +56,12 @@ button {
   white-space: normal !important;
 }
 
+h2#status {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 @media screen and (max-width: 574px) {
   .jumbotron a.btn {
     margin-top: 5px;

@@ -37,6 +37,7 @@ module.exports.listen = (server, app) => {
             if (data.room && !data.error) {
                 socket.join(room);
                 io.in(room).emit('chat meta', `${user.username} joined the room`);
+                socket.to(room).emit('player joined');
             } else if (data.error) {
                 socket.emit('err', data.error);
             }

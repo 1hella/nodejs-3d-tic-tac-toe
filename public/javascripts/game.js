@@ -2,34 +2,55 @@ var camera, controls, scene, renderer, raycaster;
 var mouse = new THREE.Vector2(),
     INTERSECTED;
 var cubes = [];
-var cubeDistance = 400;
+const CUBE_DISTANCE = 400;
 var $container = $('#game-container');
 var socket = io();
 var search = new URLSearchParams(window.location.search)
 var room = search.get('room');
 
+var isTurn = false;
+
 if (room) {
+    // player 2
     socket.emit('join game', room);
+    setStatus('Waiting for other player');
 } else {
+    // player 1
     socket.emit('new game');
+    setStatus('Waiting for other player');
 }
 
+// player 1
 socket.on('new game', (room) => {
     console.log('joined room ' + room);
 });
+
+// player 1
+socket.on('player joined', () => {
+    isTurn = true;
+    setStatus("It's your turn!");
+});
+
+socket.on('chat message', (msg) => {
+    $('#messages').prepend($('<li>').text(msg));
+});
+
+socket.on('chat meta', (msg) => {
+    addChatMeta(msg);
+});
+
+function addChatMeta(msg) {
+    $('#messages').prepend($('<li class="chat-meta">').text(msg));
+}
+
+function setStatus(msg) {
+    $('#status').text(msg);
+}
 
 $('#chat').submit(function () {
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
     return false;
-});
-
-socket.on('chat message', function (msg) {
-    $('#messages').append($('<li>').text(msg));
-});
-
-socket.on('chat meta', function (msg) {
-    $('#messages').append($('<li class="chat-meta">').text(msg));
 });
 
 init();
@@ -59,23 +80,23 @@ function init() {
 
         // x
         if (i % 3 === 1) {
-            cube.position.x = cubeDistance;
+            cube.position.x = CUBE_DISTANCE;
         } else if (i % 3 === 2) {
-            cube.position.x = cubeDistance * 2;
+            cube.position.x = CUBE_DISTANCE * 2;
         }
 
         // y
         if (i % 9 >= 6) {
-            cube.position.y = cubeDistance * 2;
+            cube.position.y = CUBE_DISTANCE * 2;
         } else if (i % 9 >= 3) {
-            cube.position.y = cubeDistance;
+            cube.position.y = CUBE_DISTANCE;
         }
 
         // z
         if (i >= 18) {
-            cube.position.z = cubeDistance * 2;
+            cube.position.z = CUBE_DISTANCE * 2;
         } else if (i >= 9) {
-            cube.position.z = cubeDistance;
+            cube.position.z = CUBE_DISTANCE;
         }
 
         cubes.push(cube);
@@ -196,9 +217,11 @@ function render() {
 
 function gameHeight() {
     var headerHeight = $('.header').innerHeight();
+    var chatHeight = 80;
+    var statusHeight = 55;
     var $body = $('body');
     var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
-    return Math.floor(window.innerHeight - headerHeight - bodyPadding);
+    return Math.floor(window.innerHeight - headerHeight - bodyPadding) - chatHeight - statusHeight;
 }
 
 function offSetTop() {
