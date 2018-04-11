@@ -6,7 +6,7 @@ const CUBE_DISTANCE = 400;
 var $container = $('#game-container');
 
 var index = window.location.href.lastIndexOf('/')
-var href = window.location.href.substr(0, index + 1);
+var href = window.location.href.substr(0, index);
 var socket = io(href);
 
 var search = new URLSearchParams(window.location.search);
