@@ -2,6 +2,7 @@ extends layout
 
 block content
   .jumbotron
+    h1 Welcome to 3D Tic Tac Toe!
     h1= title
     form#login-form(action=base + "/login", method="post")
       .lead
@@ -18,3 +19,11 @@ block content
       
       button.btn.btn-lg.btn-success.margin-right-sm(type="submit") Login
       a.btn.btn-lg.btn-danger(href=base + "/register") Register
+  .jumbotron
+    .lead
+      h2.text-left Extra Features:
+      ul.text-left
+        li Multiple games at once
+        li Live chat during game
+        li 3D board using Three.js
+        li Works perfectly on mobile!
