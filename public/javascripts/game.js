@@ -90,7 +90,7 @@ if (room) {
     // player 1
     socket.emit('new game');
     isTurn = false;
-    setStatus('It\'s the other player\'s turn!');
+    setStatus('Waiting for other player to join');
     isPlayer1 = true;
 }
 
@@ -149,7 +149,7 @@ function setTurn(turn) {
     if (turn) {
         setStatus('It\'s your turn!');
     } else {
-        setStatus('Waiting for other player');
+        setStatus('It\'s the other player\'s turn!');
     }
 }
 
@@ -237,7 +237,7 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize($container.innerWidth(), gameHeight());
-    renderer.setPixelRatio(window.devicePixelRatio);
+    // renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
     $container[0].addEventListener('click', onDocumentMouseDown, false);
