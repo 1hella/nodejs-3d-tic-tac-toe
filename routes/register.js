@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
         } else {
             console.log(`Created user ${createdUser.username}`);
             req.session.user = createdUser;
-            res.redirect('../dashboard');
+            res.redirect('./dashboard');
         }
     });
 });

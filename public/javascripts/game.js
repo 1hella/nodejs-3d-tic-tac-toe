@@ -5,7 +5,7 @@ var cubes = [];
 const CUBE_DISTANCE = 400;
 var $container = $('#game-container');
 var socket = io();
-var search = new URLSearchParams(window.location.search)
+var search = new URLSearchParams(window.location.search);
 var room = search.get('room');
 const BOARD_COLOR = 0x9932CC;
 const PLAYER_1_COLOR = 0xff0000;
@@ -90,7 +90,7 @@ if (room) {
     // player 1
     socket.emit('new game');
     isTurn = false;
-    setStatus('Waiting for other player to join');
+    setStatus('It\'s the other player\'s turn!');
     isPlayer1 = true;
 }
 
@@ -237,7 +237,7 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize($container.innerWidth(), gameHeight());
-    // renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
     $container[0].addEventListener('click', onDocumentMouseDown, false);
