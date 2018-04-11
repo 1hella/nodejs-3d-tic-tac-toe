@@ -10,7 +10,7 @@ var firstIndex = window.location.pathname.indexOf('/');
 var lastIndex = window.location.pathname.lastIndexOf('/');
 
 if (firstIndex !== lastIndex) {
-    options.path = window.location.pathname.substr(0, lastIndex);
+    options.path = window.location.pathname.substr(0, lastIndex) + '/socket.io';
 }
 
 var socket = io(window.location.origin, options);
