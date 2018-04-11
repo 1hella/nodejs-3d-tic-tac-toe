@@ -4,7 +4,11 @@ var mouse = new THREE.Vector2(),
 var cubes = [];
 const CUBE_DISTANCE = 400;
 var $container = $('#game-container');
-var socket = io('./');
+
+var index = window.location.href.lastIndexOf('/')
+var href = window.location.href.substr(0, index + 1);
+var socket = io(href);
+
 var search = new URLSearchParams(window.location.search);
 var room = search.get('room');
 const BOARD_COLOR = 0x9932CC;
