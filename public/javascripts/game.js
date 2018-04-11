@@ -5,9 +5,15 @@ var cubes = [];
 const CUBE_DISTANCE = 400;
 var $container = $('#game-container');
 
-var index = window.location.href.lastIndexOf('/')
-var href = window.location.href.substr(0, index);
-var socket = io(href);
+var options = {};
+var firstIndex = window.location.pathname.indexOf('/');
+var lastIndex = window.location.pathname.lastIndexOf('/');
+
+if (firstIndex !== lastIndex) {
+    options.path = window.location.pathname.substr(0, lastIndex);
+}
+
+var socket = io(window.location.origin, options);
 
 var search = new URLSearchParams(window.location.search);
 var room = search.get('room');
