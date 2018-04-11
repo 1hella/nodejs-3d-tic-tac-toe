@@ -28,7 +28,7 @@ router.post('/', (req, res, next) => {
             });
         } else {
             req.session.user = user;
-            res.redirect('../dashboard');
+            res.redirect('./dashboard');
         }
     });
 });

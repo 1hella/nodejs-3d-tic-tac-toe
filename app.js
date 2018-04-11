@@ -20,10 +20,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // session
 var mySession = session({
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   secret: "ayy lmao",
-  maxAge: 1000 * 60 * 30
+  maxAge: 1000 * 60 * 30,
+  cookie: {}
 });
 app.use(mySession);
 
@@ -51,7 +52,7 @@ function isLoggedIn(req, res, next) {
     next();
   } else {
     req.flash('error', 'Login first!');
-    res.redirect('/login');
+    res.redirect('./login');
   }
 }
 
