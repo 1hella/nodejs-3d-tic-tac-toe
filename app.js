@@ -20,11 +20,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // session
 var mySession = session({
-  resave: true,
+  resave: false,
   saveUninitialized: true,
   secret: "ayy lmao",
-  maxAge: 1000 * 60 * 30,
-  cookie: {}
+  maxAge: 1000 * 60 * 30
 });
 app.use(mySession);
 
