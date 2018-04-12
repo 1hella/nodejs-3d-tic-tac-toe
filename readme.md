@@ -1,5 +1,4 @@
-Node.js 3D Tic Tac Toe made with Three.js
+This project started as an assignment for a university class. Hosted on GitHub with permission.
 
-This was a project for university. Hosted on GitHub with permission.
-
-Run the project with `npm i && npm start`
+Run the project with `npm i && npm start`.
+Requires MongoDB.
