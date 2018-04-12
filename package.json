@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node-dev ./bin/www",
-    "csil": "PORT=24606 MONGO_URL='mongodb://swanhell:wx5QSOy7@localhost:27017/cmpt218_swanhell?authSource=admin' pm2 start ./bin/www",
-    "csil-node": "PORT=24606 MONGO_URL='mongodb://swanhell:wx5QSOy7@localhost:27017/cmpt218_swanhell?authSource=admin' node ./bin/www"
+    "csil": "PORT=24606 MONGODB_URI='mongodb://swanhell:wx5QSOy7@localhost:27017/cmpt218_swanhell?authSource=admin' pm2 start ./bin/www",
+    "csil-node": "PORT=24606 MONGODB_URI='mongodb://swanhell:wx5QSOy7@localhost:27017/cmpt218_swanhell?authSource=admin' node ./bin/www"
   },
   "dependencies": {
     "express": "^4.16.3",
