@@ -13,8 +13,7 @@ router.get('/', function (req, res, next) {
 
 router.post('/', (req, res, next) => {
     User.findOne({
-        username: req.body.username,
-        password: req.body.password
+        username: req.body.username
     }, (err, user) => {
         if (err) {
             res.render('login', {
@@ -24,11 +23,25 @@ router.post('/', (req, res, next) => {
         } else if (!user) {
             res.render('login', {
                 title: 'Login',
-                error: 'Username or password was incorrect'
+                error: 'No user with that username exists'
             });
         } else {
-            req.session.user = user;
-            res.redirect('./dashboard');
+            user.verifyPassword(req.body.password, (err, isValid) => {
+                if (err) {
+                    res.render('login', {
+                        title: 'Login',
+                        error: `Error: ${err}`
+                    });
+                } else if (!isValid) {
+                    res.render('login', {
+                        title: 'Login',
+                        error: 'Password was incorrect'
+                    });
+                } else {
+                    req.session.user = user;
+                    res.redirect('./dashboard');
+                }
+            });
         }
     });
 });

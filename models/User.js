@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var mongooseBcrypt = require('mongoose-bcrypt');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var schema = new mongoose.Schema({
@@ -21,7 +22,8 @@ var schema = new mongoose.Schema({
         type: Date
     },
     password: {
-        type: String
+        type: String,
+        bcrypt: true
     },
     email: {
         type: String,
@@ -37,6 +39,7 @@ var schema = new mongoose.Schema({
     }
 });
 
+schema.plugin(mongooseBcrypt);
 schema.plugin(uniqueValidator);
 
 var User = mongoose.model('User', schema);
