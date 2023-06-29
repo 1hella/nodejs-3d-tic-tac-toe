@@ -3,12 +3,13 @@
 /**
  * Module dependencies.
  */
+require('dotenv').config();
 
 var app = require('../app');
 var http = require('http');
 var mongoose = require('mongoose');
 
-var mongoURL = process.env.MONGODB_URI|| "mongodb://localhost:27017/CMPT218-ASS4";
+var mongoURL = process.env.MONGODB_URI || "mongodb://localhost:27017/CMPT218-ASS4";
 
 mongoose.connect(mongoURL).then(() => {
   console.log('Connected to MongoDB');
