@@ -1,7 +1,7 @@
 $(() => {
     $('#join-existing').click(() => {
         $('#error').addClass('hidden');
-        var room = prompt('What\'s the room number?');
+        const room = prompt('What\'s the room number?');
         if (room && room !== '') {
             $.ajax({
                 url: './checkRoom',

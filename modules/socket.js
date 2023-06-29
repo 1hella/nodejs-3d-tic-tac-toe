@@ -1,28 +1,28 @@
 'use strict';
-var GameStats = require('../models/GameStats');
-var User = require('../models/User');
+const GameStats = require('../models/GameStats');
+const User = require('../models/User');
 
-var data = {};
+const data = {};
 module.exports.listen = (server, app) => {
-    var io = require('socket.io').listen(server);
-    var sharedsession = require("express-socket.io-session");
-    var rooms = 1000;
+    const io = require('socket.io').listen(server);
+    const sharedsession = require("express-socket.io-session");
+    let rooms = 1000;
 
     io.use(sharedsession(app.session));
 
     io.on('connection', (socket) => {
 
-        var getRoom = () => socket.rooms[Object.keys(socket.rooms)[0]];
+        const getRoom = () => socket.rooms[Object.keys(socket.rooms)[0]];
 
-        var user = socket.handshake.session.user || {
+        const user = socket.handshake.session.user || {
             username: 'null'
         };
 
         socket.on('disconnecting', () => {
-            var room = getRoom();
+            const room = getRoom();
             io.in(room).emit('chat meta', `${user.username} left the room`);
             
-            var roomData = data.io.nsps['/'].adapter.rooms[room];
+            const roomData = data.io.nsps['/'].adapter.rooms[room];
             if (roomData.length === 2) {
                 GameStats.findOne({
                     room: getRoom(),
@@ -68,7 +68,7 @@ module.exports.listen = (server, app) => {
 
         socket.on('new game', () => {
             rooms++;
-            var room = rooms;
+            const room = rooms;
             socket.join(room);
             socket.emit('new game', room);
             socket.emit('chat meta', `${user.username} joined the room`);
@@ -85,7 +85,7 @@ module.exports.listen = (server, app) => {
         });
 
         socket.on('join game', function (room) {
-            var data = checkRoom(room);
+            const data = checkRoom(room);
 
             if (data.room && !data.error) {
                 socket.join(room);
@@ -175,8 +175,8 @@ function incrementLosses(username) {
 }
 
 function checkRoom(room) {
-    var results = {};
-    var room = data.io.nsps['/'].adapter.rooms[room];
+    const results = {};
+    room = data.io.nsps['/'].adapter.rooms[room];
     results.room = room;
 
     if (!room) {

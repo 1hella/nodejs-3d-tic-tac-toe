@@ -1,22 +1,22 @@
-var camera, controls, scene, renderer, raycaster;
-var mouse = new THREE.Vector2(),
+let camera, controls, scene, renderer, raycaster;
+let mouse = new THREE.Vector2(),
     INTERSECTED;
-var cubes = [];
+const cubes = [];
 const CUBE_DISTANCE = 400;
-var $container = $('#game-container');
+const $container = $('#game-container');
 
-var options = {};
-var firstIndex = window.location.pathname.indexOf('/');
-var lastIndex = window.location.pathname.lastIndexOf('/');
+const options = {};
+const firstIndex = window.location.pathname.indexOf('/');
+const lastIndex = window.location.pathname.lastIndexOf('/');
 
 if (firstIndex !== lastIndex) {
     options.path = window.location.pathname.substr(0, lastIndex) + '/socket.io';
 }
 
-var socket = io(window.location.origin, options);
+const socket = io(window.location.origin, options);
 
-var search = new URLSearchParams(window.location.search);
-var room = search.get('room');
+const search = new URLSearchParams(window.location.search);
+const room = search.get('room');
 const BOARD_COLOR = 0x9932CC;
 const PLAYER_1_COLOR = 0xff0000;
 const PLAYER_2_COLOR = 0x0000ff;
@@ -85,11 +85,11 @@ const WINNING_COMBINATIONS = [
     [8, 13, 18]
 ];
 
-var board = new Array(27);
+let board = new Array(27);
 board.fill(0);
 
-var isTurn;
-var isPlayer1;
+let isTurn;
+let isPlayer1;
 
 if (room) {
     // player 2
@@ -176,9 +176,9 @@ $('#chat').submit(() => {
 $('#reset-camera').click(resetCamera);
 
 function drawBoard() {
-    for (var i = 0; i < board.length; i++) {
-        var cube = cubes[i];
-        var move = board[i];
+    for (let i = 0; i < board.length; i++) {
+        const cube = cubes[i];
+        const move = board[i];
         if (move === 0) {
             cube.material.color.setHex(BOARD_COLOR);
         } else if (move === 1) {
@@ -209,12 +209,12 @@ function init() {
     controls.addEventListener('change', render);
     scene = new THREE.Scene();
 
-    var light = new THREE.DirectionalLight(0xffffff, 1);
+    const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(2000, 2000, 1500).normalize();
     scene.add(light);
 
-    for (var i = 0; i < 27; i++) {
-        var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshLambertMaterial({
+    for (let i = 0; i < 27; i++) {
+        let cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshLambertMaterial({
             color: BOARD_COLOR
         }));
 
@@ -247,7 +247,6 @@ function init() {
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize($container.innerWidth(), gameHeight());
-    // renderer.setPixelRatio(window.devicePixelRatio);
     $container.append(renderer.domElement);
 
     $container[0].addEventListener('click', onDocumentMouseDown, false);
@@ -256,14 +255,14 @@ function init() {
 }
 
 function onDocumentMouseDown(event) {
-    var mouse3D = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+    const mouse3D = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 
     raycaster.setFromCamera(mouse3D, camera);
-    var intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children);
     
     if (intersects.length > 0) {
-        var cube = intersects[0].object;
-        var index = cubes.indexOf(cube);
+        const cube = intersects[0].object;
+        const index = cubes.indexOf(cube);
         console.log(index);
 
         if (!isTurn) {
@@ -314,8 +313,8 @@ function checkForWinner() {
         return;
     }
 
-    playerNumber = isPlayer1 ? 1 : 2;
-    for (winningCombination of WINNING_COMBINATIONS) {
+    let playerNumber = isPlayer1 ? 1 : 2;
+    for (let winningCombination of WINNING_COMBINATIONS) {
         if (board[winningCombination[0]] === board[winningCombination[1]] &&
             board[winningCombination[1]] === board[winningCombination[2]] &&
             board[winningCombination[0]] !== 0) {
@@ -346,7 +345,7 @@ function render() {
     camera.updateMatrixWorld();
 
     raycaster.setFromCamera(mouse, camera);
-    var intersects = raycaster.intersectObjects(scene.children);
+    const intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
         if (INTERSECTED != intersects[0].object) {
             if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
@@ -362,10 +361,10 @@ function render() {
 }
 
 function gameHeight() {
-    var headerHeight = $('.header').innerHeight();
-    var chatHeight = 80;
-    var statusHeight = 55;
-    var $body = $('body');
-    var bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
+    const headerHeight = $('.header').innerHeight();
+    const chatHeight = 80;
+    const statusHeight = 55;
+    const $body = $('body');
+    const bodyPadding = parseInt($body.css('padding-top')) + parseInt($body.css('padding-bottom'));
     return Math.floor(window.innerHeight - headerHeight - bodyPadding) - chatHeight - statusHeight;
 }

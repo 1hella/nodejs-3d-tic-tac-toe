@@ -1,16 +1,16 @@
-var express = require('express');
-var path = require('path');
-var session = require('express-session');
-var flash = require('express-flash');
+const express = require('express');
+const path = require('path');
+const session = require('express-session');
+const flash = require('express-flash');
 
-var dashboard = require('./routes/dashboard');
-var login = require('./routes/login');
-var register = require('./routes/register');
-var game = require('./routes/game');
-var logout = require('./routes/logout');
-var checkRoom = require('./routes/checkRoom');
+const dashboard = require('./routes/dashboard');
+const login = require('./routes/login');
+const register = require('./routes/register');
+const game = require('./routes/game');
+const logout = require('./routes/logout');
+const checkRoom = require('./routes/checkRoom');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,7 +19,7 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, 'public')));
 
 // session
-var mySession = session({
+const mySession = session({
   resave: false,
   saveUninitialized: true,
   secret: "ayy lmao",
@@ -57,7 +57,7 @@ function isLoggedIn(req, res, next) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

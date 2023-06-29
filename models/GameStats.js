@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // wins/losses are stored in User
-var schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     room: {
         type: Number
     },
@@ -23,6 +23,6 @@ var schema = new mongoose.Schema({
     players: [String]
 });
 
-var GameStats = mongoose.model('GameStats', schema);
+const GameStats = mongoose.model('GameStats', schema);
 
 module.exports = GameStats;

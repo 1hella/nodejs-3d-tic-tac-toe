@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 router.post('/', function (req, res, next) {
-    var data = require('../modules/socket').checkRoom(req.body.room);
+    const data = require('../modules/socket').checkRoom(req.body.room);
     if (data.room && !data.error) {
         res.send('./game?room=' + req.body.room);
     } else if (!data.room) {

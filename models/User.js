@@ -1,10 +1,10 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var mongooseBcrypt = require('mongoose-bcrypt');
-var uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('mongoose');
+const mongooseBcrypt = require('mongoose-bcrypt');
+const uniqueValidator = require('mongoose-unique-validator');
 
-var schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     username: {
         type: String,
         unique: true
@@ -42,6 +42,6 @@ var schema = new mongoose.Schema({
 schema.plugin(mongooseBcrypt);
 schema.plugin(uniqueValidator);
 
-var User = mongoose.model('User', schema);
+const User = mongoose.model('User', schema);
 
 module.exports = User;
